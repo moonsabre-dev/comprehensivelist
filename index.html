@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" name="viewport" content="width-device-width" />
+        <title>comprehensivelist</title>
+        <style type="text/css">
+
+            * {
+                margin: 0;
+                padding: 0;
+                position: relative;
+            }
+            body {
+                background-color: #111111;
+                color: #eeeeee;
+            }
+
+            /* The main container. */
+            .main {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+            }
+
+            /* The container for the list entries. */
+            .list {
+                background-color: #151515;
+                width: 35%;
+                height: 100%;
+                z-index: 1;
+            }
+            .main.shortmode .list {
+                left: -100%;
+                position: fixed;
+                transition: all 0.5s ease;
+                width: 80%;
+            }
+            .main.active .list {
+                left: 0;
+            }
+
+            /* The list entries themselves. */
+            .list-entries {
+                background-color: #191919;
+                height: 8%;
+                margin: 1vh 0 1vh 0;
+                padding-left: 5%;
+                font-family: sans;
+                font-size: calc(1.15*(0.5vw + 0.5vh));
+                display: flex;
+                align-items: center;
+                column-gap: 1vw;
+                transition: all 0.35s ease;
+                cursor: pointer;
+                user-select: none;
+            }
+            .list-entries:hover {
+                transform: perspective(800px) rotateY(20deg) translate(30px,0);
+            }
+            .main.shortmode .list .list-entries {
+                height: 12%;
+                font-size: calc(2.2*(0.5vw + 0.5vh));
+                column-gap: 2vw;
+            }
+
+            /* The "latest" subtitle on the right of the latest list entry. */
+            .list-latest {
+                position: absolute;
+                font-family: sans;
+                font-style: oblique;
+                font-size: calc(1*(0.5vw + 0.5vh));
+                width: 92.5%;
+                text-align: right;
+                left: 0;
+            }
+            .main.shortmode .list .list-entries .list-latest {
+                font-size: calc(1.75*(0.5vw + 0.5vh));
+            }
+
+            /* The menu button that appears when short mode is activated. */
+            .button {
+                height: 96px;
+                width: 96px;
+                border-radius: 100%;
+                background-color: #1a1a1a;
+                position: fixed;
+                right: 6%;
+                bottom: 3%;
+                align-items: center;
+                display: none;
+                z-index: 2;
+                transition: all 0.35s ease;
+            }
+            .main.shortmode .button {
+                display: grid;
+            }
+            .main.active .button {
+                transform: scale(-1,1);
+            }
+            .button-bar {
+                width: 50%;
+                left: 13.5%;
+                height: 6px;
+                background-color: white;
+            }
+            .button-bar:nth-child(1) {
+                transform: rotate(45deg) translate(30px,-7px);
+            }
+            .button-bar:nth-child(2) {
+                width: 70%;
+            }
+            .button-bar:nth-child(3) {
+                transform: rotate(-45deg) translate(30px,7px);
+            }
+
+            /* The colored circles on the left of each list entry. */
+            .circles {
+                height: calc(1*(0.5vw + 0.5vh));
+                width: calc(1*(0.5vw + 0.5vh));
+                border-radius: 100%;
+            }
+            #red-circle {
+                background-color: #ff4d4d;
+            }
+            #yellow-circle {
+                background-color: #ffff4d;
+            }
+            #green-circle {
+                background-color: #4dff4d;
+            }
+
+            /* The viewport where each entry's content is displayed.*/
+            .viewport {
+                height: 100%;
+                width: 65%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .main.shortmode .viewport {
+                width: 100%;
+            }
+
+            /* Governs each entry in the viewport. */
+            .content {
+                position: absolute;
+                width: 100%;
+                height: 20%;
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+            .content-text {
+                font-family: sans;
+                font-style: oblique;
+                font-size: calc(5*(0.5vw + 0.5vh));
+                text-align: center;
+            }
+
+            /* The tutorial text that appears when no entry is selected. */
+            #intro {
+                font-size: calc(3*(0.5vw + 0.5vh));
+                color: #aaaaaa;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <!-- The main container. -->
+        <div class="main">
+
+            <!-- The menu button that appears when short mode is activated. -->
+            <div class="button" onclick="togglelist()">
+                <div class="button-bar"></div>
+                <div class="button-bar"></div>
+                <div class="button-bar"></div>
+            </div>
+
+            <!-- The list sidebar containing each list entry. -->
+            <div class="list">
+
+                <!-- The list entries. Each must have a numeric ID that corresponds to its viewport content entry. -->
+                <div class="list-entries" id="entry3"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 3<div class="list-latest">Latest</div></div>
+                <div class="list-entries" id="entry2"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 2</div>
+                <div class="list-entries" id="entry1"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 1</div>
+            </div>
+
+            <!-- The viewport where each entry's content is displayed. -->
+            <div class="viewport">
+
+                <!-- The tutorial text that appears when no entry is selected. -->
+                <div class="content-text" id="intro"></div>
+
+                <!-- The content itself. Each must have a numeric ID that corresponds to its list entry. -->
+                <div class="content" id="content3">
+                    <div class="content-text">entry 3</div>
+                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
+                </div>
+                <div class="content" id="content2">
+                    <div class="content-text">entry 2</div>
+                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
+                </div>
+                <div class="content" id="content1">
+                    <div class="content-text">entry 1</div>
+                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import jQuery library. -->
+        <script src="jquery.js"></script>
+
+        <!-- JavaScript code. -->
+        <script>
+
+            // Variables.
+            const main = document.querySelector('.main')
+            const intro = document.querySelector('#intro')
+            const screen = window.matchMedia("(max-width: 1040px)")
+
+            // Activate short mode when screen width is under 1040 pixels.
+            function shortmode(screen) {
+                if (screen.matches) {
+                    main.classList.add('shortmode');
+                    intro.innerHTML = 'Tap on the arrow button to display the list of entries.';
+                } else {
+                    main.classList.remove('shortmode');
+                    intro.innerHTML = 'Click on a list entry to view.';
+                }
+            }
+            shortmode(screen)
+
+            // Call the short mode function every time the screen is resized.
+            screen.addEventListener("change", function() {
+                shortmode(screen);
+            })
+
+            // Called whenever the menu button is clicked.
+            function togglelist() {
+                main.classList.toggle('active');
+            }
+
+            // jQuery code.
+            (function() {
+
+                // The amount of entries in total. Referenced twice in this code block.
+                const entrycount = 3
+
+                // Hide all entries in the viewport and reset background color for all entries in the list.
+                function hideall() {
+                    for (i=1; i<entrycount+1; i++) {
+                        $('#content'+i+'').css('display', 'none');
+                        $('#entry'+i+'').css('background-color', '#191919');
+
+                        // Hide tutorial text when an entry has been selected.
+                        $('#intro').css('display', 'none');
+                    };
+                }
+
+                // Displays the referenced viewport entry.
+                function displayentry(num) {
+                    hideall();
+                    $('#content'+num+'').css('display', 'grid');
+                    $('#content'+num+'').css('opacity', '0');
+                    $('#content'+num+'').animate({opacity: '1'}, 500);
+                    $('#entry'+num+'').css('background-color', '#292929');
+                }
+
+                // Adds event listeners for each list entry.
+                function display(num) {
+                    $('#entry'+num+'').on('click', function() {
+                        displayentry(num);
+
+                        // Hides the list in short mode once an entry is clicked.
+                        main.classList.remove('active');
+                    })
+                }
+
+                // Calls display(num) one time per existing entry.
+                for (i=1; i<entrycount+1; i++) {
+                    display(i);
+                };
+
+            })();
+        </script>
+
+    </body>
+
+</html>
