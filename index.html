@@ -157,12 +157,6 @@
                 text-align: center;
             }
 
-            /* The tutorial text that appears when no entry is selected. */
-            #intro {
-                font-size: calc(3*(0.5vw + 0.5vh));
-                color: #aaaaaa;
-            }
-
         </style>
     </head>
     <body>
@@ -181,30 +175,31 @@
             <div class="list">
 
                 <!-- The list entries. Each must have a numeric ID that corresponds to its viewport content entry. -->
-                <div class="list-entries" id="entry3"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 3<div class="list-latest">Latest</div></div>
-                <div class="list-entries" id="entry2"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 2</div>
-                <div class="list-entries" id="entry1"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 1</div>
+                <div class="list-entries"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 1<div class="list-latest">Latest</div></div>
+                <div class="list-entries"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 2</div>
+                <div class="list-entries"><div class="circles" id="red-circle"></div><div class="circles" id="yellow-circle"></div><div class="circles" id="green-circle"></div>entry 3</div>
             </div>
 
             <!-- The viewport where each entry's content is displayed. -->
             <div class="viewport">
 
                 <!-- The tutorial text that appears when no entry is selected. -->
-                <div class="content-text" id="intro"></div>
+                <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))" id="intro"></div>
 
-                <!-- The content itself. Each must have a numeric ID that corresponds to its list entry. -->
-                <div class="content" id="content3">
-                    <div class="content-text">entry 3</div>
-                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
-                </div>
-                <div class="content" id="content2">
-                    <div class="content-text">entry 2</div>
-                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
-                </div>
-                <div class="content" id="content1">
+                <!-- The content itself. No need to assign an ID to each one, just add and run! -->
+                <div class="content">
                     <div class="content-text">entry 1</div>
                     <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
                 </div>
+                <div class="content">
+                    <div class="content-text">entry 2</div>
+                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
+                </div>
+                <div class="content">
+                    <div class="content-text">entry 3</div>
+                    <div class="content-text" style="font-size:calc(3*(0.5vw + 0.5vh))">Content goes here.</div>
+                </div>
+
             </div>
         </div>
 
@@ -245,13 +240,13 @@
             (function() {
 
                 // The amount of entries in total. Referenced twice in this code block.
-                const entrycount = 3
+                const entrycount = document.querySelectorAll('.content').length
 
                 // Hide all entries in the viewport and reset background color for all entries in the list.
                 function hideall() {
                     for (i=1; i<entrycount+1; i++) {
-                        $('#content'+i+'').css('display', 'none');
-                        $('#entry'+i+'').css('background-color', '#191919');
+                        $('.content:nth-child('+(i+1)+')').css('display', 'none');
+                        $('.list-entries:nth-child('+i+')').css('background-color', '#191919');
 
                         // Hide tutorial text when an entry has been selected.
                         $('#intro').css('display', 'none');
@@ -261,15 +256,15 @@
                 // Displays the referenced viewport entry.
                 function displayentry(num) {
                     hideall();
-                    $('#content'+num+'').css('display', 'grid');
-                    $('#content'+num+'').css('opacity', '0');
-                    $('#content'+num+'').animate({opacity: '1'}, 500);
-                    $('#entry'+num+'').css('background-color', '#292929');
+                    $('.content:nth-child('+(num+1)+')').css('display', 'grid');
+                    $('.content:nth-child('+(num+1)+')').css('opacity', '0');
+                    $('.content:nth-child('+(num+1)+')').animate({opacity: '1'}, 500);
+                    $('.list-entries:nth-child('+num+')').css('background-color', '#292929');
                 }
 
                 // Adds event listeners for each list entry.
                 function display(num) {
-                    $('#entry'+num+'').on('click', function() {
+                    $('.list-entries:nth-child('+num+')').on('click', function() {
                         displayentry(num);
 
                         // Hides the list in short mode once an entry is clicked.
@@ -284,7 +279,5 @@
 
             })();
         </script>
-
     </body>
-
 </html>
